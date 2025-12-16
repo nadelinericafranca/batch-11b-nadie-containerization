@@ -51,8 +51,14 @@ public class ParcelCostRestController {
             }
         }
 
-        // Valid parameters
-        double cost = parcelCostService.computeCost(parsedL, parsedW, parsedH);
-        return ResponseEntity.ok("{\"cost\": " + cost + "}");
+
+        try {
+            // Valid parameters
+            double cost = parcelCostService.computeCost(parsedL, parsedW, parsedH);
+            return ResponseEntity.ok(Map.of("cost", cost));
+        } catch (IllegalArgumentException e) {
+            // return errors as 400 bad request
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }
